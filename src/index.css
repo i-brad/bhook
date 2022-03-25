@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.overflow-nest::-webkit-scrollbar {
+  appearance: none;
+}
+
+.text-accent {
+  color: #086972;
+}
+
+.bg-accent {
+  background: #086972;
+}
