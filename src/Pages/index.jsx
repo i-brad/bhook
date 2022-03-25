@@ -143,7 +143,7 @@ function Home() {
           </div>
         </div>
       )}
-      {books.length > 0 && (
+      {books.length > 0 ? (
         <div className="w-full p-5 h-auto">
           <ul className="w-full flex justify-start items-center overflow-auto flex-nowrap h-auto overflow-nest mt-5">
             {Tags.map((tag, index) => {
@@ -179,6 +179,10 @@ function Home() {
               </p>
             ))}
         </div>
+      ) : (
+        <p className="block my-3 mx-auto text-accent text-center text-xl">
+          No books avalible yet
+        </p>
       )}
     </div>
   );
