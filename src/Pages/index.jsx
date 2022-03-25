@@ -180,7 +180,7 @@ function Home() {
             ))}
         </div>
       ) : (
-        <p className="block my-3 mx-auto text-accent text-center text-xl">
+        <p className="block my-3 mx-auto text-accent text-center text-sm">
           No books available yet
         </p>
       )}
