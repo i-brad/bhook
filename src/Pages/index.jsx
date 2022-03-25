@@ -181,7 +181,7 @@ function Home() {
         </div>
       ) : (
         <p className="block my-3 mx-auto text-accent text-center text-xl">
-          No books avalible yet
+          No books available yet
         </p>
       )}
     </div>
