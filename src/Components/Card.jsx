@@ -58,7 +58,7 @@ function Card({ data }) {
       <img
         src={imageURL || `./images/a.jpg`}
         alt={title}
-        className="w-32 h-full object-center object-cover mr-4"
+        className="w-32 h-full object-center object-contain mr-4"
       />
       <div className="w-full h-full flex justify-between align-start flex-col">
         <div className="w-full h-full">
