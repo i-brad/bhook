@@ -1,4 +1,4 @@
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
@@ -14,7 +14,7 @@ import { doc, collection, updateDoc, increment } from "firebase/firestore";
 function Card({ data }) {
   let { title, imageURL, tags, likes, reviews, description, id } = data;
 
-  let history = useHistory();
+  let navigate = useNavigate();
   let [Likes, setLikes] = useState(likes);
   const setIsBookSelected = useSetRecoilState(isBookSelectedState);
   //const setIsReviewing = useSetRecoilState(isReviewingState);
@@ -28,7 +28,7 @@ function Card({ data }) {
   };
 
   const reviewHandle = () => {
-    history.push(`/#${title}-${id}`)
+    navigate(`/#${title}-${id}`)
     setIsBookSelected(true);
     setIsReviewing(true);
     setSearchOn(false);
