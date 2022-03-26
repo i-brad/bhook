@@ -74,7 +74,7 @@ function Card({ data }) {
                 return (
                   <Link
                     to="/"
-                    className="text-xs bg-green-100 p-1 mr-1 rounded-sm whitespacing-nowrap"
+                    className="text-xs bg-green-100 p-1 m-1 rounded-sm whitespacing-nowrap"
                     key={index}
                   >
                     #{tag}
