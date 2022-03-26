@@ -93,14 +93,14 @@ function Card({ data }) {
           >
             <span className="inline-flex justify-start items-center mr-1">
               {Likes}
-              <FavoriteBorderIcon className="ml-1" />
+              <FavoriteBorderIcon className="md:ml-1" />
             </span>
             Likes
           </button>
           <button className="cursor-pointer text-xs md:text-sm" onClick={reviewHandle}>
             <span className="inline-flex justify-start items-center mr-1">
               {reviews}
-              <RateReviewOutlinedIcon className="ml-1" />
+              <RateReviewOutlinedIcon className="md:ml-1" />
             </span>
             Reviews
           </button>
