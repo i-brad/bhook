@@ -69,12 +69,12 @@ function Card({ data }) {
           </Link>
           <p className="w-full text-sm">{description}</p>
           {tags.length > 0 && (
-            <span className="flex justify-start items-center w-full mt-2">
+            <span className="flex justify-start items-center w-full mt-2 flex-wrap">
               {tags.map((tag, index) => {
                 return (
                   <Link
                     to="/"
-                    className="text-xs bg-green-100 p-1 mr-1 rounded-sm"
+                    className="text-xs bg-green-100 p-1 mr-1 rounded-sm whitespacing-nowrap"
                     key={index}
                   >
                     #{tag}
