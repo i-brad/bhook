@@ -143,6 +143,7 @@ await setDoc(bookRef, {
     });
     //console.log("here");
 setIsUploaded(true);
+setIsUploading(false);
 setUploadOn(false);
 setBook({});
 setImage([])
@@ -156,7 +157,7 @@ setIsUploaded(false)
 }
 uploadReadyBook()
 }
-}, [book,  keywords, setBook, setKeywords, setFileURL, setImageURL, setFile, setImage, setIsUploaded, setUploadOn, fileURL, imageURL])
+}, [book,  keywords, setBook, setIsUploading, setKeywords, setFileURL, setImageURL, setFile, setImage, setIsUploaded, setUploadOn, fileURL, imageURL])
 
   const filesPresence = (e) => {
     e.preventDefault();
