@@ -19,9 +19,10 @@ let [book, setBook] = useState({});
   let [FileError, setFileError] = useState("");
   const [error, setError] = useState("");
   const [isUploaded, setIsUploaded] = useState(false)
+const [isUploading, setIsUploading] = useState(false)
 
   let [imageURL, setImageURL] = useState("");
-  let [fileURL, setFileURL] = useState("");
+  let [file URL, setFileURL] = useState("");
   const closeUploadModal = () => {
     setUploadOn(false);
   };
@@ -92,6 +93,7 @@ let [book, setBook] = useState({});
   }, [Image]);
 
   const uploadBook = async (book) => {
+setIsUploading(true)
     const imageRef = ref(storage, `images/${book.image.name}`);
     const fileRef = ref(storage, `pdfs/${book.file.name}`);
     await uploadBytes(imageRef, book.image)
@@ -125,7 +127,7 @@ setBook(book)
   };
 
 useEffect(() => {
-if(fileURL && imageURL && keywords){
+if(fileURL && imageURL && keywords.length > 0){
 async function uploadReadyBook(){
 let bookRef = doc(collection(db, "books"));
 await setDoc(bookRef, {
@@ -142,13 +144,19 @@ await setDoc(bookRef, {
     //console.log("here");
 setIsUploaded(true);
 setUploadOn(false);
+setBook({});
+setImage([])
+setFile([]);
+setFileURL("")
+setImageURL("")
+setKeywords([])
 setTimeout(() =>{
 setIsUploaded(false)
-}, 1000)
+}, 1500)
 }
 uploadReadyBook()
 }
-}, [book,  keywords, setIsUploaded, setUploadOn, fileURL, imageURL])
+}, [book,  keywords, setBook, setKeywords, setFileURL, setImageURL, setFile, setImage, setIsUploaded, setUploadOn, fileURL, imageURL])
 
   const filesPresence = (e) => {
     e.preventDefault();
@@ -275,7 +283,7 @@ uploadReadyBook()
             <label className="font-medium">Upload book image(max 1MB)</label>
             {Image && (
               <p className="text-sm mb-3">
-                <span className="font-medium">Image:</span> {Image[0]?.name}
+                <span className="font-medium">Image:</span> {Image[0]?.name || ""}
               </p>
             )}
             <div
@@ -319,7 +327,7 @@ uploadReadyBook()
             <label className="font-medium">Upload book pdf file</label>
             {File && (
               <p className="text-sm mb-3">
-                <span className="font-medium">Book:</span> {File[0]?.name}
+                <span className="font-medium">Book:</span> {File[0]?.name || ""}
               </p>
             )}
             <div
@@ -374,8 +382,8 @@ uploadReadyBook()
             />
             <button
               type="submit"
-              disabled={Image.length > 0? false : true}
-              className={`bg-accent ${Image.length > 0? "opacity-100" : "opacity-50"} rounded-3xl text-white px-4 py-2 flex justify-between items-center mt-5 mx-auto`}
+              disabled={Image.length > 0? isUploading ? true : false : true}
+              className={`bg-accent ${Image.length > 0? isUploading? "opacity-50" : "opacity-100" : "opacity-50"} rounded-3xl text-white px-4 py-2 flex justify-between items-center mt-5 mx-auto`}
             >
               <CloudUploadOutlinedIcon className="mr-1" />
               Upload
