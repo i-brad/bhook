@@ -69,7 +69,7 @@ function Card({ data }) {
           >
             {title}
           </Link>
-          <p className="w-full text-sm">{description}</p>
+          <p className="w-full text-xs md:text-sm">{description}</p>
           {tags.length > 0 && (
             <span className="flex justify-start items-center w-full mt-2 flex-wrap">
               {tags.map((tag, index) => {
