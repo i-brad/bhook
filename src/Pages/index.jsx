@@ -32,17 +32,23 @@ function Home() {
           books.push({ id: doc.id, ...doc.data() });
         });
 
-        let tags = [{ id: "l29elx", tag: "all" }];
+        let tags = ["all"];
+        let ids =["l29elx"]
         books.forEach((book) => {
           //tags = [...tags, ...book.tags];
           book.tags.forEach((tag) => {
-            if (!tags.includes({ id: book.id, tag })) {
-              tags.push({ id: book.id, tag });
+            if (!tags.includes(tag)) {
+              tags.push(tag);
+              ids.push(book.id)
             }
           });
         });
+        let refinedTags = [];
+        tags.forEach((tag, index) =>{
+           refinedTags.push({id: ids[index], tag})
+        })
 
-        setTags(tags);
+        setTags(refinedTags);
         setBooks(books);
         setLoading(false);
       }
