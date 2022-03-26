@@ -375,7 +375,7 @@ setIsUploaded(false)
           </Form>
         )}
       </Formik>
-{isUploaded && <p classmate="absolute top-5 left-0 text-accent bg-green-100 rounded-3xl text-sm text-center w-full h-auto p-3">Book Uploaded successfully uploaded</p>}
+{isUploaded && <p className="absolute top-5 left-0 text-accent bg-green-100 rounded-3xl text-sm text-center w-full h-auto p-3">Book Uploaded successfully uploaded</p>}
     </div>
   );
 }
