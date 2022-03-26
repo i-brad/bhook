@@ -374,7 +374,7 @@ uploadReadyBook()
             />
             <button
               type="submit"
-              disabled={Image.length > 0? true : false}
+              disabled={Image.length > 0? false : true}
               className={`bg-accent ${Image.length > 0? "opacity-100" : "opacity-50"} rounded-3xl text-white px-4 py-2 flex justify-between items-center mt-5 mx-auto`}
             >
               <CloudUploadOutlinedIcon className="mr-1" />
