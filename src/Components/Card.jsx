@@ -10,10 +10,12 @@ import {
 import { useState, useEffect } from "react";
 import { db } from "../firebase";
 import { doc, collection, updateDoc, increment } from "firebase/firestore";
+import { useHistory } from "react-router-dom";
 
 function Card({ data }) {
   let { title, imageURL, tags, likes, reviews, description, id } = data;
 
+  let history = useHistory();
   let [Likes, setLikes] = useState(likes);
   const setIsBookSelected = useSetRecoilState(isBookSelectedState);
   //const setIsReviewing = useSetRecoilState(isReviewingState);
@@ -26,11 +28,12 @@ function Card({ data }) {
     setSearchOn(false);
   };
 
-  /*const reviewHandle = () => {
+  const reviewHandle = () => {
+    history.push(`/#${title}-${id}`)
     setIsBookSelected(true);
     setIsReviewing(true);
     setSearchOn(false);
-  };*/
+  };
 
   useEffect(() => {
     if (liking) {
@@ -95,7 +98,7 @@ function Card({ data }) {
             </span>
             Likes
           </button>
-          <button className="cursor-pointer text-sm">
+          <button className="cursor-pointer text-sm" onClick={reviewHandle}>
             <span className="inline-flex justify-start items-center mr-1">
               {reviews}
               <RateReviewOutlinedIcon className="ml-1" />
