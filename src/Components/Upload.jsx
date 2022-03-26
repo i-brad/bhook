@@ -187,7 +187,7 @@ setIsUploaded(false)
         onSubmit={(values, { setSubmitting }) => {
           if (!Image.length) {
             setErr("File required");
-
+            
             return false;
           }
           let tags = values.tags.toLowerCase().split(",");
@@ -366,8 +366,8 @@ setIsUploaded(false)
             />
             <button
               type="submit"
-              disabled={isSubmitting}
-              className={`bg-accent ${isSubmitting? "opacity-100" : "opacity-50"} rounded-3xl text-white px-4 py-2 flex justify-between items-center mt-5 mx-auto`}
+              disabled={Image.length > 0? true : false}
+              className={`bg-accent ${Image.length > 0? "opacity-100" : "opacity-50"} rounded-3xl text-white px-4 py-2 flex justify-between items-center mt-5 mx-auto`}
             >
               <CloudUploadOutlinedIcon className="mr-1" />
               Upload
