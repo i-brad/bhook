@@ -391,8 +391,8 @@ uploadReadyBook()
           </Form>
         )}
       </Formik>
-{isUploaded && <p className="absolute z-[200] top-5 left-0 text-accent bg-green-100 text-sm text-center w-full h-auto p-3">Boo successfully uploaded</p>}
-{error && <p className="absolute z-[200] top-5 left-0 text-red-800 bg-red-100 text-sm text-center w-full h-auto p-3">{error}</p>}
+{isUploaded && <p className="absolute z-[200] top-0 left-0 text-accent bg-green-100 text-sm text-center w-full h-auto p-3">Boo successfully uploaded</p>}
+{error && <p className="absolute z-[200] top-0 left-0 text-red-800 bg-red-100 text-sm text-center w-full h-auto p-3">{error}</p>}
     </div>
   );
 }
