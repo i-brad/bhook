@@ -88,7 +88,7 @@ function Card({ data }) {
         </div>
         <span className="flex justify-between items-center w-full mt-3">
           <button
-            className="cursor-pointer text-sm"
+            className="cursor-pointer text-xs md:text-sm"
             onClick={() => setLiking(true)}
           >
             <span className="inline-flex justify-start items-center mr-1">
@@ -97,7 +97,7 @@ function Card({ data }) {
             </span>
             Likes
           </button>
-          <button className="cursor-pointer text-sm" onClick={reviewHandle}>
+          <button className="cursor-pointer text-xs md:text-sm" onClick={reviewHandle}>
             <span className="inline-flex justify-start items-center mr-1">
               {reviews}
               <RateReviewOutlinedIcon className="ml-1" />
