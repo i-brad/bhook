@@ -13,6 +13,7 @@ function Upload() {
   let [isUploadOn, setUploadOn] = useRecoilState(isUploadOnState);
   let [Image, setImage] = useState([]);
   let [File, setFile] = useState([]);
+let [book, setBook] = useState({});
   let [keywords, setKeywords] = useState([]);
   let [err, setErr] = useState("");
   let [FileError, setFileError] = useState("");
@@ -119,11 +120,15 @@ function Upload() {
       .catch((err) => {
         setError("Failed to upload");
         console.error(err);
-      });
+    })
+setBook(book)
+  };
 
-    let bookRef = doc(collection(db, "books"));
-
-    await setDoc(bookRef, {
+useEffect(() => {
+if(fileURL && imageURL){
+async function uploadReadyBook(){
+let bookRef = doc(collection(db, "books"));
+await setDoc(bookRef, {
       title: book.title,
       description: book.description,
       new: true,
@@ -140,7 +145,10 @@ setUploadOn(false);
 setTimeout(() =>{
 setIsUploaded(false)
 }, 1000)
-  };
+}
+uploadReadyBook()
+}
+}, [book, setIsUploaded, setUploadOn, fileURL, imageURL])
 
   const filesPresence = (e) => {
     e.preventDefault();
