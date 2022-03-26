@@ -22,7 +22,7 @@ let [book, setBook] = useState({});
 const [isUploading, setIsUploading] = useState(false)
 
   let [imageURL, setImageURL] = useState("");
-  let [file URL, setFileURL] = useState("");
+  let [fileURL, setFileURL] = useState("");
   const closeUploadModal = () => {
     setUploadOn(false);
   };
