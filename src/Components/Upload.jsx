@@ -383,7 +383,8 @@ uploadReadyBook()
           </Form>
         )}
       </Formik>
-{isUploaded && <p className="absolute top-5 left-0 text-accent bg-green-100 rounded-3xl text-sm text-center w-full h-auto p-3">Book Uploaded successfully uploaded</p>}
+{isUploaded && <p className="absolute top-5 left-0 text-accent bg-green-100 rounded-3xl text-sm text-center w-full h-auto p-3">Boo successfully uploaded</p>}
+{error && <p className="absolute top-5 left-0 text-accent bg-red-100 rounded-3xl text-sm text-center w-full h-auto p-3">{error}</p>}
     </div>
   );
 }
