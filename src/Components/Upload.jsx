@@ -386,13 +386,13 @@ uploadReadyBook()
               className={`bg-accent ${Image.length > 0? isUploading? "opacity-50" : "opacity-100" : "opacity-50"} rounded-3xl text-white px-4 py-2 flex justify-between items-center mt-5 mx-auto`}
             >
               <CloudUploadOutlinedIcon className="mr-1" />
-              Upload
+              {isUploading ? "Uploading" : "Upload"}
             </button>
           </Form>
         )}
       </Formik>
-{isUploaded && <p className="absolute top-5 left-0 text-accent bg-green-100 rounded-3xl text-sm text-center w-full h-auto p-3">Boo successfully uploaded</p>}
-{error && <p className="absolute top-5 left-0 text-accent bg-red-100 rounded-3xl text-sm text-center w-full h-auto p-3">{error}</p>}
+{isUploaded && <p className="absolute z-[200] top-5 left-0 text-accent bg-green-100 text-sm text-center w-full h-auto p-3">Boo successfully uploaded</p>}
+{error && <p className="absolute z-[200] top-5 left-0 text-red-800 bg-red-100 text-sm text-center w-full h-auto p-3">{error}</p>}
     </div>
   );
 }
