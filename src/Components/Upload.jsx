@@ -125,7 +125,7 @@ setBook(book)
   };
 
 useEffect(() => {
-if(fileURL && imageURL){
+if(fileURL && imageURL && keywords){
 async function uploadReadyBook(){
 let bookRef = doc(collection(db, "books"));
 await setDoc(bookRef, {
@@ -148,7 +148,7 @@ setIsUploaded(false)
 }
 uploadReadyBook()
 }
-}, [book, setIsUploaded, setUploadOn, fileURL, imageURL])
+}, [book,  keywords, setIsUploaded, setUploadOn, fileURL, imageURL])
 
   const filesPresence = (e) => {
     e.preventDefault();
