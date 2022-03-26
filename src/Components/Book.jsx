@@ -116,7 +116,7 @@ function Book() {
           <CloseIcon />
         </button>
       </span>
-      <div className="relative p-5 pt-10 md:px-14 text-accent h-auto w-full">
+      <div className="relative p-5 pt-16 md:pt-0 md:px-10 text-accent h-auto w-full">
         <h1 className="font-medium text-xl mb-5">
           About{" "}
           <em className="text-2xl capitalize">
