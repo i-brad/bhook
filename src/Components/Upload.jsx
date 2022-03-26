@@ -17,6 +17,7 @@ function Upload() {
   let [err, setErr] = useState("");
   let [FileError, setFileError] = useState("");
   const [error, setError] = useState("");
+  const [isUploaded, setIsUploaded] = useState(false)
 
   let [imageURL, setImageURL] = useState("");
   let [fileURL, setFileURL] = useState("");
@@ -63,7 +64,7 @@ function Upload() {
     if (Image.length) {
       let reg = /^image/;
       if (reg.test(Image[0].type)) {
-        if (Image[0].size <= 102400) {
+        if (Image[0].size <= 1048576) {
           const previewImage = (image) => {
             let reader = new FileReader();
             reader.readAsDataURL(image);
@@ -74,7 +75,8 @@ function Upload() {
           };
           [...Image].forEach(previewImage);
         } else {
-          setErr("File is too large. Max of an 100KB");
+          setImage([]);:
+          setErr("File is too large. Max of an 1MB");
           setTimeout(() => {
             setErr("");
           }, 5000);
@@ -132,7 +134,12 @@ function Upload() {
       likes: 0,
       reviews: 0,
     });
-    console.log("here");
+    //console.log("here");
+setIsUploaded(true);
+setUploadOn(false);
+setTimeout(() =>{
+setIsUploaded(false)
+}, 1000)
   };
 
   const filesPresence = (e) => {
@@ -257,7 +264,7 @@ function Upload() {
               component="div"
               className="text-red-500 -mt-1 text-xs mb-3"
             />
-            <label className="font-medium">Upload book image(max 100KB)</label>
+            <label className="font-medium">Upload book image(max 1MB)</label>
             {Image && (
               <p className="text-sm mb-3">
                 <span className="font-medium">Image:</span> {Image[0]?.name}
@@ -360,7 +367,7 @@ function Upload() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-accent rounded-3xl text-white px-4 py-2 flex justify-between items-center mt-5 mx-auto"
+              className={`bg-accent ${isSubmitting? "opacity-100" : "opacity-50"} rounded-3xl text-white px-4 py-2 flex justify-between items-center mt-5 mx-auto`}
             >
               <CloudUploadOutlinedIcon className="mr-1" />
               Upload
@@ -368,6 +375,7 @@ function Upload() {
           </Form>
         )}
       </Formik>
+{isUploaded && <p classmate="absolute top-5 left-0 text-accent bg-green-100 rounded-3xl text-sm text-center w-full h-auto p-3">Book Uploaded successfully uploaded</p>}
     </div>
   );
 }
