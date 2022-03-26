@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
@@ -10,7 +10,6 @@ import {
 import { useState, useEffect } from "react";
 import { db } from "../firebase";
 import { doc, collection, updateDoc, increment } from "firebase/firestore";
-import { useHistory } from "react-router-dom";
 
 function Card({ data }) {
   let { title, imageURL, tags, likes, reviews, description, id } = data;
