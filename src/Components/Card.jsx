@@ -17,7 +17,7 @@ function Card({ data }) {
   let navigate = useNavigate();
   let [Likes, setLikes] = useState(likes);
   const setIsBookSelected = useSetRecoilState(isBookSelectedState);
-  //const setIsReviewing = useSetRecoilState(isReviewingState);
+  const setIsReviewing = useSetRecoilState(isReviewingState);
   let setSearchOn = useSetRecoilState(isSearchOnState);
 
   let [liking, setLiking] = useState(false);
