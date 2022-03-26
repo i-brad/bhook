@@ -26,11 +26,11 @@ function Card({ data }) {
     setSearchOn(false);
   };
 
-  const reviewHandle = () => {
+  /*const reviewHandle = () => {
     setIsBookSelected(true);
     setIsReviewing(true);
     setSearchOn(false);
-  };
+  };*/
 
   useEffect(() => {
     if (liking) {
@@ -95,7 +95,7 @@ function Card({ data }) {
             </span>
             Likes
           </button>
-          <button className="cursor-pointer text-sm" onClick={reviewHandle}>
+          <button className="cursor-pointer text-sm">
             <span className="inline-flex justify-start items-center mr-1">
               {reviews}
               <RateReviewOutlinedIcon className="ml-1" />
