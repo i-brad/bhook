@@ -1,4 +1,4 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage} from "formik";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import * as Yup from "yup";
 import { isUploadOnState } from "../State_Atoms";
@@ -75,7 +75,7 @@ function Upload() {
           };
           [...Image].forEach(previewImage);
         } else {
-          setImage([]);:
+          setImage([]);
           setErr("File is too large. Max of an 1MB");
           setTimeout(() => {
             setErr("");
