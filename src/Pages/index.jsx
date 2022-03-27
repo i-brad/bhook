@@ -68,7 +68,7 @@ function Home() {
 
       setNewBooks(() => newBooks);
 if(books.length === 0 && newBooks.length == 0){
-setMsg("No books available yet or try reloading")
+setMsg("No book available yet or try reloading")
 }
     }
 
