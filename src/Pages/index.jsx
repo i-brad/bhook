@@ -51,7 +51,7 @@ function Home() {
         })
 
         setTags(refinedTags);
-        setBooks(books);
+        setBooks(() => books);
         setLoading(false);
       }
       getAllBooks();
@@ -66,14 +66,14 @@ function Home() {
         newBooks.push({ id: doc.id, ...doc.data() });
       });
 
-      setNewBooks(newBooks);
+      setNewBooks(() => newBooks);
+if(books.length === 0 && newBooks.length == 0){
+setMsg("No books available yet or try reloading")
+}
     }
 
     getNewBooks();
 
-if(books.length === 0 && newBooks.length == 0){
-setMsg("No books available yet or try reloading")
-}
 
   }, [setBooks, setNewBooks, number, term, books, newBooks]);
 
