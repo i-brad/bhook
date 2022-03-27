@@ -19,10 +19,12 @@ function Home() {
   const [number, setNumber] = useState(20);
   const [term, setTerm] = useState("");
   const [Loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState("Loading...")
 
   useEffect(() => {
     const booksRef = collection(db, "books");
     if (!term) {
+     //setLoading(true)
       async function getAllBooks() {
         let q = query(booksRef, orderBy("title"), limit(number));
 
@@ -68,7 +70,14 @@ function Home() {
     }
 
     getNewBooks();
-  }, [setBooks, setNewBooks, number, term]);
+
+if(books.length === 0 && newBooks.length == 0){
+setMsg("No books available yet or try reloading")
+}
+
+  }, [setBooks, setNewBooks, number, term, books, newBooks]);
+
+
 
   useEffect(() => {
     if (term) {
@@ -187,7 +196,7 @@ function Home() {
         </div>
       ) : (
         <p className="block my-3 mx-auto text-accent text-center text-sm">
-          No books available yet
+          {msg}
         </p>
       )}
     </div>
