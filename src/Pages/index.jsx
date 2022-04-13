@@ -19,12 +19,12 @@ function Home() {
   const [number, setNumber] = useState(20);
   const [term, setTerm] = useState("");
   const [Loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState("Loading...")
+  const [msg, setMsg] = useState("Loading...");
 
   useEffect(() => {
     const booksRef = collection(db, "books");
     if (!term) {
-     //setLoading(true)
+      //setLoading(true)
       async function getAllBooks() {
         let q = query(booksRef, orderBy("title"), limit(number));
 
@@ -35,23 +35,23 @@ function Home() {
         });
 
         let tags = ["all"];
-        let ids =["l29elx"]
+        let ids = ["l29elx"];
         books.forEach((book) => {
           //tags = [...tags, ...book.tags];
           book.tags.forEach((tag) => {
             if (!tags.includes(tag)) {
               tags.push(tag);
-              ids.push(book.id)
+              ids.push(book.id);
             }
           });
         });
         let refinedTags = [];
-        tags.forEach((tag, index) =>{
-           refinedTags.push({id: ids[index], tag})
-        })
+        tags.forEach((tag, index) => {
+          refinedTags.push({ id: ids[index], tag });
+        });
 
         setTags(refinedTags);
-        setBooks(() => books);
+        setBooks(books);
         setLoading(false);
       }
       getAllBooks();
@@ -67,17 +67,13 @@ function Home() {
       });
 
       setNewBooks(() => newBooks);
-if(books.length === 0 && newBooks.length == 0){
-setMsg("No book available yet or try reloading")
-}
+      if (books.length === 0 && newBooks.length === 0) {
+        setMsg("No book available yet or try reloading");
+      }
     }
 
     getNewBooks();
-
-
   }, [setBooks, setNewBooks, number, term, books, newBooks]);
-
-
 
   useEffect(() => {
     if (term) {
@@ -130,8 +126,10 @@ setMsg("No book available yet or try reloading")
     });
 
     target.parentElement.classList.add("bg-green-100");
-    setTerm(target.innerText);
+    setTerm(target.id);
   };
+
+  console.log(books);
 
   return (
     <div className="w-full min-h-[100vh] bg-white text-white">

@@ -36,7 +36,7 @@ function Book() {
   let allBooks = useRecoilValue(bookState);
   let [reviews, setReviews] = useRecoilState(reviewState);
   const [reviewSent, setReviewSent] = useState(false);
-  const [sending, setSending] = useState(false)
+  const [sending, setSending] = useState(false);
 
   let [initial, setInitial] = useState(hash ? true : false);
 
@@ -78,7 +78,7 @@ function Book() {
   };
 
   const submitReview = async (values) => {
-setSending(true);
+    setSending(true);
     let dbRef = collection(db, "books");
     let bookRef = doc(dbRef, id);
     let reviewRef = collection(bookRef, "reviews");
@@ -91,19 +91,19 @@ setSending(true);
       name: values.name,
       review: values.review,
       date: Timestamp.now(),
-    }).then(() =>{
-setSending(false)
-setReviewSent(true);
-    setIsReview(false);
-setTimeout(() => {
-      setReviewSent(false);
-    }, 1500);
-}).catch(err => console.error(err));
+    })
+      .then(() => {
+        setSending(false);
+        setReviewSent(true);
+        setIsReview(false);
+        setTimeout(() => {
+          setReviewSent(false);
+        }, 1500);
+      })
+      .catch((err) => console.error(err));
 
     //setReviewSent(true);
     //setIsReview(false);
-
-    
   };
 
   return (
@@ -143,7 +143,7 @@ setTimeout(() => {
               >
                 <AutoStoriesOutlinedIcon className="mr-1" /> Read
               </Link> */}
-              <a
+              {/* <a
                 href={book[0]?.fileURL || "/"}
                 target="_blank"
                 rel="noreferrer"
@@ -151,7 +151,7 @@ setTimeout(() => {
                 onClick={closeBookModal}
               >
                 <AutoStoriesOutlinedIcon className="mr-1" /> Read
-              </a>
+              </a> */}
               <a
                 href={book[0]?.fileURL || "/"}
                 downnload
@@ -248,9 +248,12 @@ setTimeout(() => {
               <button
                 type="submit"
                 disabled={sending}
-                className={`${sending? "opacity-50" : "opacity-100"} flex justify-between items-center bg-accent rounded-3xl text-white px-4 py-2 mt-3 mx-auto`}
+                className={`${
+                  sending ? "opacity-50" : "opacity-100"
+                } flex justify-between items-center bg-accent rounded-3xl text-white px-4 py-2 mt-3 mx-auto`}
               >
-                <RateReviewOutlinedIcon className="mr-1" />{sending? "Sending" : "Send"}
+                <RateReviewOutlinedIcon className="mr-1" />
+                {sending ? "Sending" : "Send"}
               </button>
             </Form>
           )}

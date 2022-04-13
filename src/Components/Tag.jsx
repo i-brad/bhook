@@ -5,6 +5,7 @@ function Tag({ tag, className = "", handle }) {
     >
       <button
         className="first-letter:capitalize whitespace-nowrap h-full w-full"
+        id={tag}
         onClick={handle}
       >
         {tag}
