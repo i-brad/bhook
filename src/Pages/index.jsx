@@ -82,7 +82,6 @@ function Home() {
         if (term.toLowerCase() !== "all") {
           let q1 = query(
             booksRef,
-            orderBy("title"),
             where("tags", "array-contains", term.toLowerCase()),
             limit(number)
           );
