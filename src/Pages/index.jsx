@@ -128,7 +128,7 @@ function Home() {
     setTerm(target.id);
   };
 
-  console.log(books);
+  //console.log(books);
 
   return (
     <div className="w-full min-h-[100vh] bg-white text-white">
