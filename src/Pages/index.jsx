@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { Card, Loader, Tag } from "../Components";
+import { Card, Tag } from "../Components";
 import { db } from "../firebase";
 import { bookState } from "../State_Atoms";
 
@@ -24,32 +24,36 @@ function Home() {
 
     setLoading(true);
     async function getAllBooks() {
-      let q = query(booksRef, orderBy("title"), limit(number));
+      try {
+        let q = query(booksRef, orderBy("title"), limit(number));
 
-      const querySnapshot = await getDocs(q);
-      let books = [];
-      querySnapshot.forEach((doc) => {
-        books.push({ id: doc.id, ...doc.data() });
-      });
-
-      let tags = ["all"];
-      let ids = ["l29elx"];
-      books.forEach((book) => {
-        book.tags.forEach((tag) => {
-          if (!tags.includes(tag)) {
-            tags.push(tag);
-            ids.push(book.id);
-          }
+        const querySnapshot = await getDocs(q);
+        let books = [];
+        querySnapshot.forEach((doc) => {
+          books.push({ id: doc.id, ...doc.data() });
         });
-      });
-      let refinedTags = [];
-      tags.forEach((tag, index) => {
-        refinedTags.push({ id: ids[index], tag });
-      });
 
-      setTags(refinedTags);
-      setBooks(books);
-      setLoading(false);
+        let tags = ["all"];
+        let ids = ["l29elx"];
+        books.forEach((book) => {
+          book.tags.forEach((tag) => {
+            if (!tags.includes(tag)) {
+              tags.push(tag);
+              ids.push(book.id);
+            }
+          });
+        });
+        let refinedTags = [];
+        tags.forEach((tag, index) => {
+          refinedTags.push({ id: ids[index], tag });
+        });
+
+        setTags(refinedTags);
+        setBooks(books);
+        setLoading(false);
+      } catch (error) {
+        setMsg(error.toString());
+      }
     }
     getAllBooks();
   }, [setBooks, number]);
