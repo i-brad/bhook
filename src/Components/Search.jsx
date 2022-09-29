@@ -1,12 +1,12 @@
 import CloseIcon from "@mui/icons-material/Close";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 //import { Link } from "react-router-dom";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import { isSearchOnState, isUploadOnState } from "../State_Atoms";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { Card } from "../Components";
 import { db } from "../firebase";
-import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { isSearchOnState, isUploadOnState } from "../State_Atoms";
 
 function Search() {
   let [isSearchOn, setSearchOn] = useRecoilState(isSearchOnState);
@@ -15,6 +15,8 @@ function Search() {
   let closeSearchModal = () => {
     setSearchOn(!isSearchOn);
   };
+
+  let [searching, setSearching] = useState(false);
 
   let setUploadOn = useSetRecoilState(isUploadOnState);
 
@@ -40,6 +42,7 @@ function Search() {
       });
 
       setResults(resultsArr);
+      setSearching(false);
     }
     getResult();
   }, [searchTerm]);
@@ -52,11 +55,11 @@ function Search() {
     >
       <button
         onClick={closeSearchModal}
-        className="absolute top-3 right-5 md:right-10 text-accent z-20 w-10 h-auto hover:bg-green-100 rounded p-1"
+        className="absolute z-20 w-10 h-auto p-1 rounded top-3 right-5 md:right-10 text-accent hover:bg-green-100"
       >
         <CloseIcon />
       </button>
-      <form className="sticky top-0 z-10 w-full h-auto mb-5 flex justify-start items-center bg-white border-b-slate-300 border-b-2">
+      <form className="sticky top-0 z-10 flex items-center justify-start w-full h-auto mb-5 bg-white border-b-2 border-b-slate-300">
         <button type="submit">
           <SearchOutlinedIcon className="text-accent" />
         </button>
@@ -64,42 +67,25 @@ function Search() {
           type="text"
           name="search"
           placeholder="Search...."
-          className="flex-1 outline-none border-none px-3 py-4"
+          className="flex-1 px-3 py-4 border-none outline-none"
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
+            setSearching(true);
           }}
         />
       </form>
-      <div className="text-accent">
-        {/* <h4 className="font-medium opacity-80">Popular book searches</h4>
-        <ul>
-          <li className="py-2 pl-1 underline">
-            <Link to="/">Broken pages</Link>
-          </li>
-          <li className="py-2 pl-1 underline">
-            <Link to="/">Growth zero</Link>
-          </li>
-          <li className="py-2 pl-1 underline">
-            <Link to="/">Fantastic life</Link>
-          </li>
-          <li className="py-2 pl-1 underline">
-            <Link to="/">Not a begger</Link>
-          </li>
-          <li className="py-2 pl-1 underline">
-            <Link to="/">Steal like an artist</Link>
-          </li>
-        </ul> */}
-
-        <p className="mt-10 block">
-          <button className="underline font-medium" onClick={openUploadModal}>
-            Upload
-          </button>{" "}
-          a book for others to read.
-        </p>
-      </div>
+      <p className="block mt-10 text-accent">
+        <button className="font-medium underline" onClick={openUploadModal}>
+          Upload
+        </button>{" "}
+        a book for others to read.
+      </p>
+      {searching && (
+        <div className="w-6 h-6 mx-auto my-5 transition-all border-2 border-[#086972] rounded-full animate-spin border-l-transparent"></div>
+      )}
       {results.length > 0 && (
-        <div className="text-accent w-full h-auto mt-5">
+        <div className="w-full h-auto mt-5 text-accent">
           <h4 className="font-medium">Search Results ({results.length})</h4>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(0,500px))] md:grid-cols-[repeat(auto-fit,minmax(0,400px))] place-content-start pb-5 w-full h-auto">
             {results.map((book) => {

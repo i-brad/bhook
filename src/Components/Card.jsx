@@ -1,18 +1,27 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
-import {
-  isSearchOnState,
-  isReviewingState,
-  isBookSelectedState,
-} from "../State_Atoms";
-import { useState, useEffect } from "react";
+import { collection, doc, increment, updateDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 import { db } from "../firebase";
-import { doc, collection, updateDoc, increment } from "firebase/firestore";
+import {
+  isBookSelectedState,
+  isReviewingState,
+  isSearchOnState,
+} from "../State_Atoms";
 
 function Card({ data }) {
-  let { title, imageURL, tags, likes, reviews, description, id } = data;
+  let {
+    title,
+    imageURL,
+    tags,
+    likes,
+    reviews,
+    description,
+    id,
+    author = "Bhook",
+  } = data;
 
   let navigate = useNavigate();
   let [Likes, setLikes] = useState(likes);
@@ -28,7 +37,7 @@ function Card({ data }) {
   };
 
   const reviewHandle = () => {
-    navigate(`/#${title}-${id}`)
+    navigate(`/#${title}-${id}`);
     setIsBookSelected(true);
     setIsReviewing(true);
     setSearchOn(false);
@@ -58,25 +67,26 @@ function Card({ data }) {
       <img
         src={imageURL || `./images/a.jpg`}
         alt={title}
-        className="w-32 h-full object-center object-contain mr-4"
+        className="object-cover object-center w-32 h-full mr-4"
       />
-      <div className="w-full h-full flex justify-between align-start flex-col">
+      <div className="flex flex-col justify-between w-full h-full align-start">
         <div className="w-full h-full">
           <Link
             to={`#${title}-${id}`}
-            className="underline mb-2 block font-medium text-lg capitalize"
+            className="block mb-2 text-lg font-medium underline capitalize"
             onClick={handle}
           >
             {title}
           </Link>
           <p className="w-full text-xs md:text-sm">{description}</p>
+          <p className="w-full mt-3 text-xs md:text-sm">Author: {author}</p>
           {tags.length > 0 && (
-            <span className="flex justify-start items-center w-full mt-2 flex-wrap">
+            <span className="flex flex-wrap items-center justify-start w-full mt-2">
               {tags.map((tag, index) => {
                 return (
                   <Link
                     to="/"
-                    className="text-xs bg-green-100 p-1 m-1 rounded-sm whitespacing-nowrap"
+                    className="p-1 m-1 text-xs bg-green-100 rounded-sm whitespacing-nowrap"
                     key={index}
                   >
                     #{tag}
@@ -86,19 +96,26 @@ function Card({ data }) {
             </span>
           )}
         </div>
-        <span className="flex justify-between items-center w-full mt-3">
+        <span className="flex items-center justify-between w-full mt-3">
           <button
-            className="cursor-pointer text-xs md:text-sm"
+            className="text-xs cursor-pointer md:text-sm"
             onClick={() => setLiking(true)}
           >
-            <span className="inline-flex justify-start items-center mr-1">
+            <span className="inline-flex items-center justify-start mr-1">
               {Likes}
-              <FavoriteBorderIcon className="md:ml-1" />
+              {liking ? (
+                <div className="w-4 h-4 ml-1 transition-all border-2 border-[#086972] rounded-full animate-spin border-l-transparent"></div>
+              ) : (
+                <FavoriteBorderIcon className="md:ml-1" />
+              )}
             </span>
             Likes
           </button>
-          <button className="cursor-pointer text-xs md:text-sm" onClick={reviewHandle}>
-            <span className="inline-flex justify-start items-center mr-1">
+          <button
+            className="text-xs cursor-pointer md:text-sm"
+            onClick={reviewHandle}
+          >
+            <span className="inline-flex items-center justify-start mr-1">
               {reviews}
               <RateReviewOutlinedIcon className="md:ml-1" />
             </span>

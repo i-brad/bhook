@@ -1,25 +1,25 @@
-import { Formik, Form, Field, ErrorMessage} from "formik";
-import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
-import * as Yup from "yup";
-import { isUploadOnState } from "../State_Atoms";
-import { useRecoilState } from "recoil";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState, useEffect } from "react";
+import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import * as Yup from "yup";
 import { db, storage } from "../firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { setDoc, doc, collection } from "firebase/firestore";
+import { isUploadOnState } from "../State_Atoms";
 
 function Upload() {
   let [isUploadOn, setUploadOn] = useRecoilState(isUploadOnState);
   let [Image, setImage] = useState([]);
   let [File, setFile] = useState([]);
-let [book, setBook] = useState({});
+  let [book, setBook] = useState({});
   let [keywords, setKeywords] = useState([]);
   let [err, setErr] = useState("");
   let [FileError, setFileError] = useState("");
   const [error, setError] = useState("");
-  const [isUploaded, setIsUploaded] = useState(false)
-const [isUploading, setIsUploading] = useState(false)
+  const [isUploaded, setIsUploaded] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   let [imageURL, setImageURL] = useState("");
   let [fileURL, setFileURL] = useState("");
@@ -66,7 +66,7 @@ const [isUploading, setIsUploading] = useState(false)
     if (Image.length) {
       let reg = /^image/;
       if (reg.test(Image[0].type)) {
-        if (Image[0].size <= 1048576) {
+        if (Image[0].size <= 2097152) {
           const previewImage = (image) => {
             let reader = new FileReader();
             reader.readAsDataURL(image);
@@ -78,7 +78,7 @@ const [isUploading, setIsUploading] = useState(false)
           [...Image].forEach(previewImage);
         } else {
           setImage([]);
-          setErr("File is too large. Max of an 1MB");
+          setErr("File is too large. Max of an 2MB");
           setTimeout(() => {
             setErr("");
           }, 5000);
@@ -93,7 +93,7 @@ const [isUploading, setIsUploading] = useState(false)
   }, [Image]);
 
   const uploadBook = async (book) => {
-setIsUploading(true)
+    setIsUploading(true);
     const imageRef = ref(storage, `images/${book.image.name}`);
     const fileRef = ref(storage, `pdfs/${book.file.name}`);
     await uploadBytes(imageRef, book.image)
@@ -116,24 +116,23 @@ setIsUploading(true)
         getDownloadURL(fRef)
           .then(async (url) => {
             setFileURL(url);
+            uploadReadyBook();
           })
           .catch((err) => console.error(err));
       })
       .catch((err) => {
         setError("Failed to upload");
         console.error(err);
-    })
-setBook(book)
+      });
+    setBook(book);
   };
 
-useEffect(() => {
-if(fileURL && imageURL && keywords.length > 0){
-async function uploadReadyBook(){
-let bookRef = doc(collection(db, "books"));
-await setDoc(bookRef, {
+  async function uploadReadyBook() {
+    let bookRef = doc(collection(db, "books"));
+    await setDoc(bookRef, {
       title: book.title,
+      author: book.author,
       description: book.description,
-      new: true,
       keywords,
       tags: [...book.tags],
       imageURL,
@@ -141,23 +140,20 @@ await setDoc(bookRef, {
       likes: 0,
       reviews: 0,
     });
-    //console.log("here");
-setIsUploaded(true);
-setIsUploading(false);
-setUploadOn(false);
-setBook({});
-setImage([])
-setFile([]);
-setFileURL("")
-setImageURL("")
-setKeywords([])
-setTimeout(() =>{
-setIsUploaded(false)
-}, 1500)
-}
-uploadReadyBook()
-}
-}, [book,  keywords, setBook, setIsUploading, setKeywords, setFileURL, setImageURL, setFile, setImage, setIsUploaded, setUploadOn, fileURL, imageURL])
+
+    setIsUploaded(true);
+    setIsUploading(false);
+    setUploadOn(false);
+    setBook({});
+    setImage([]);
+    setFile([]);
+    setFileURL("");
+    setImageURL("");
+    setKeywords([]);
+    setTimeout(() => {
+      setIsUploaded(false);
+    }, 1500);
+  }
 
   const filesPresence = (e) => {
     e.preventDefault();
@@ -179,34 +175,30 @@ uploadReadyBook()
     >
       <button
         onClick={closeUploadModal}
-        className="absolute top-3 right-5 md:right-10 text-accent z-20 w-10 h-auto hover:bg-green-100 rounded p-1"
+        className="absolute z-20 w-10 h-auto p-1 rounded top-3 right-5 md:right-10 text-accent hover:bg-green-100"
       >
         <CloseIcon />
       </button>
-      <h3 className="text-accent mb-5 text-xl">Upload a book</h3>
+      <h3 className="mb-5 text-xl text-accent">Upload a book</h3>
       <Formik
         initialValues={{
           title: "",
+          author: "",
           description: "",
           tags: "",
         }}
         validationSchema={Yup.object({
-          title: Yup.string()
-            .max(30, "Must be 30 characters or less")
-            .required("Required"),
-          description: Yup.string()
-            .min(10, "Must be 10 characters or less")
-            .required("Required"),
-          tags: Yup.string()
-            .min(5, "Must be 5 characters or less")
-            .required("Required"),
+          title: Yup.string().required("Required"),
+          author: Yup.string().required("Required"),
+          description: Yup.string().required("Required"),
+          tags: Yup.string().required("Required"),
         })}
         onSubmit={(values, { setSubmitting }) => {
           if (!Image.length) {
             setErr("File required");
-            
             return false;
           }
+          // console.log(values);
           let tags = values.tags.toLowerCase().split(",");
 
           const splitWord = (value) => {
@@ -237,6 +229,7 @@ uploadReadyBook()
           let book = {
             tags,
             title: values.title,
+            author: values.author,
             description: values.description,
             image: Image[0],
             file: File[0],
@@ -246,7 +239,7 @@ uploadReadyBook()
           setSubmitting(false);
         }}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form className="w-full m-auto text-accent">
             <label htmlFor="name" className="font-medium">
               Book title
@@ -256,13 +249,29 @@ uploadReadyBook()
               name="title"
               id="title"
               placeholder="Enter name of book"
-              className="block w-full px-3 py-2 rounded-md mb-3 mt-1 border-current border-2 outline-none"
+              className="block w-full px-3 py-2 mt-1 mb-3 border-2 border-current rounded-md outline-none"
               required
             />
             <ErrorMessage
               name="title"
               component="div"
-              className="text-red-500 -mt-1 text-xs mb-3"
+              className="mb-3 -mt-1 text-xs text-red-500"
+            />
+            <label htmlFor="name" className="font-medium">
+              Book author
+            </label>
+            <Field
+              type="text"
+              name="author"
+              id="author"
+              placeholder="Enter author of book"
+              className="block w-full px-3 py-2 mt-1 mb-3 border-2 border-current rounded-md outline-none"
+              required
+            />
+            <ErrorMessage
+              name="author"
+              component="div"
+              className="mb-3 -mt-1 text-xs text-red-500"
             />
             <label htmlFor="description" className="font-medium">
               Book description
@@ -271,7 +280,7 @@ uploadReadyBook()
               type="text"
               name="description"
               placeholder="Enter book description"
-              className="block w-full h-24 px-3 py-2 rounded-md mb-3 mt-1 border-current border-2 outline-none"
+              className="block w-full h-24 px-3 py-2 mt-1 mb-3 border-2 border-current rounded-md outline-none"
               component="textarea"
               id="description"
               required
@@ -279,12 +288,13 @@ uploadReadyBook()
             <ErrorMessage
               name="description"
               component="div"
-              className="text-red-500 -mt-1 text-xs mb-3"
+              className="mb-3 -mt-1 text-xs text-red-500"
             />
             <label className="font-medium">Upload book image(max 1MB)</label>
             {Image && (
-              <p className="text-sm mb-3">
-                <span className="font-medium">Image:</span> {Image[0]?.name || ""}
+              <p className="mb-3 text-sm">
+                <span className="font-medium">Image:</span>{" "}
+                {Image[0]?.name || ""}
               </p>
             )}
             <div
@@ -292,12 +302,12 @@ uploadReadyBook()
               onDragOver={filesPresence}
               onDragEnd={endDrag}
               onDragLeave={endDrag}
-              className="relative flex justify-between items-center flex-col w-full px-3 py-2 rounded-md mb-3 mt-1 border-current border-2 outline-none"
+              className="relative flex flex-col items-center justify-between w-full px-3 py-2 mt-1 mb-3 border-2 border-current rounded-md outline-none"
             >
               <Field
                 type="file"
                 name="image"
-                className="cursor-pointer hidden"
+                className="hidden cursor-pointer"
                 id="image"
                 accept="image/*"
                 onChange={(e) => {
@@ -308,26 +318,26 @@ uploadReadyBook()
               <CloudUploadOutlinedIcon className="w-[5rem!important] h-[5rem!important]" />
               <label
                 htmlFor="image"
-                className="cursor-pointer font-medium text-sm"
+                className="text-sm font-medium cursor-pointer"
               >
                 Browse files
               </label>
               <img
                 src=""
                 alt=""
-                className=" w-auto h-auto object-center object-contain mt-2"
+                className="object-contain object-center w-auto h-auto mt-2 "
                 id="img"
               />
             </div>
             <ErrorMessage
               name="image"
               component="div"
-              className="text-red-500 -mt-1 text-xs mb-3"
+              className="mb-3 -mt-1 text-xs text-red-500"
             />
-            {err && <p className="text-red-500 -mt-1 text-xs mb-3">{err}</p>}
+            {err && <p className="mb-3 -mt-1 text-xs text-red-500">{err}</p>}
             <label className="font-medium">Upload book pdf file</label>
             {File && (
-              <p className="text-sm mb-3">
+              <p className="mb-3 text-sm">
                 <span className="font-medium">Book:</span> {File[0]?.name || ""}
               </p>
             )}
@@ -336,12 +346,12 @@ uploadReadyBook()
               onDragOver={filesPresence}
               onDragEnd={endDrag}
               onDragLeave={endDrag}
-              className="relative flex justify-between items-center flex-col w-full px-3 py-2 rounded-md mb-3 mt-1 border-current border-2 outline-none"
+              className="relative flex flex-col items-center justify-between w-full px-3 py-2 mt-1 mb-3 border-2 border-current rounded-md outline-none"
             >
               <Field
                 type="file"
                 name="file"
-                className="cursor-pointer hidden"
+                className="hidden cursor-pointer"
                 id="file"
                 accept="application/pdf"
                 onChange={(e) => {
@@ -352,7 +362,7 @@ uploadReadyBook()
               <CloudUploadOutlinedIcon className="w-[5rem!important] h-[5rem!important]" />
               <label
                 htmlFor="file"
-                className="cursor-pointer font-medium text-sm"
+                className="text-sm font-medium cursor-pointer"
               >
                 Browse files
               </label>
@@ -360,31 +370,37 @@ uploadReadyBook()
             <ErrorMessage
               name="file"
               component="div"
-              className="text-red-500 -mt-1 text-xs mb-3"
+              className="mb-3 -mt-1 text-xs text-red-500"
             />
             {FileError && (
-              <p className="text-red-500 -mt-1 text-xs mb-3">{FileError}</p>
+              <p className="mb-3 -mt-1 text-xs text-red-500">{FileError}</p>
             )}
             <label htmlFor="tags" className="font-medium">
-              Tags (separate with comma (,))
+              Tags (separate with commas)
             </label>
             <Field
               type="text"
               name="tags"
               id="tags"
               placeholder="tags (book's focus) like fiction, africa, ...etc"
-              className="block w-full px-3 py-2 rounded-md mb-3 mt-1 border-current border-2 outline-none"
+              className="block w-full px-3 py-2 mt-1 mb-3 border-2 border-current rounded-md outline-none"
               required
             />
             <ErrorMessage
               name="tags"
               component="div"
-              className="text-red-500 -mt-1 text-xs mb-3"
+              className="mb-3 -mt-1 text-xs text-red-500"
             />
             <button
               type="submit"
-              disabled={Image.length > 0? isUploading ? true : false : true}
-              className={`bg-accent ${Image.length > 0? isUploading? "opacity-50" : "opacity-100" : "opacity-50"} rounded-3xl text-white px-4 py-2 flex justify-between items-center mt-5 mx-auto`}
+              disabled={Image.length > 0 ? (isUploading ? true : false) : true}
+              className={`bg-accent ${
+                Image.length > 0
+                  ? isUploading
+                    ? "opacity-50"
+                    : "opacity-100"
+                  : "opacity-50"
+              } rounded-3xl text-white px-4 py-2 flex justify-between items-center mt-5 mx-auto`}
             >
               <CloudUploadOutlinedIcon className="mr-1" />
               {isUploading ? "Uploading" : "Upload"}
@@ -392,8 +408,16 @@ uploadReadyBook()
           </Form>
         )}
       </Formik>
-{isUploaded && <p className="absolute z-[200] top-0 left-0 text-accent bg-green-100 text-sm text-center w-full h-auto p-3">Boo successfully uploaded</p>}
-{error && <p className="absolute z-[200] top-0 left-0 text-red-800 bg-red-100 text-sm text-center w-full h-auto p-3">{error}</p>}
+      {isUploaded && (
+        <p className="absolute z-[200] top-0 left-0 text-accent bg-green-100 text-sm text-center w-full h-auto p-3">
+          Boo successfully uploaded
+        </p>
+      )}
+      {error && (
+        <p className="absolute z-[200] top-0 left-0 text-red-800 bg-red-100 text-sm text-center w-full h-auto p-3">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
